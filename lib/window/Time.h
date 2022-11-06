@@ -13,11 +13,11 @@ class Time: public Window {
         ~Time();
 
         void init();
-        void update(Adafruit_NeoMatrix &matrix);
+        void update(Adafruit_NeoMatrix &matrix, int x, int y);
     protected:
     private:
-    WiFiUDP _ntp_udp;
-    NTPClient _time_client;
+        WiFiUDP _ntp_udp;
+        NTPClient _time_client;
 };
 
 }

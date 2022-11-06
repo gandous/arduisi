@@ -8,7 +8,6 @@
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
 #include <Uri.h>
-#include <Clock.h>
 #include <eeprom.h>
 #include <WindowManager.h>
 #include "api.h"
@@ -26,7 +25,6 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, PIN_MATRIX,
   NEO_TILE_LEFT,
   NEO_GRB + NEO_KHZ800);
 ESP8266WebServer server(80);
-Clock dclock;
 WindowManager window_manager;
 
 void setup_default_network() {
@@ -88,8 +86,7 @@ void setup()
 }
 
 void loop() {
-    if (dclock.getElapsedTime() > 700 && state == State::CONNECTED) {
-        dclock.restart();
+    if (state == State::CONNECTED) {
         window_manager.update(matrix);
     }
     server.handleClient();

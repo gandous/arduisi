@@ -10,7 +10,7 @@ class Window {
         virtual ~Window() {};
 
         virtual void init() = 0;
-        virtual void update(Adafruit_NeoMatrix &matrix) = 0;
+        virtual void update(Adafruit_NeoMatrix &matrix, int x, int y) = 0;
     protected:
     private:
 };

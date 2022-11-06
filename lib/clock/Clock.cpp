@@ -15,3 +15,8 @@ uint64_t Clock::getElapsedTime() const
 {
     return (millis() - _time);
 }
+
+uint64_t Clock::getElapsedTimeAsSecond() const
+{
+    return ((millis() - _time) / 1000);
+}
