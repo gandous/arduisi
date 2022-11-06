@@ -10,9 +10,11 @@
 #include <Uri.h>
 #include <Clock.h>
 #include <eeprom.h>
+#include <WindowManager.h>
 #include "api.h"
 #include "font.h"
 #include "website.h"
+#include "state.h"
 
 static const uint8_t PIN_MATRIX = 5;
 static const char *default_ssid = "Arduisi";
@@ -25,6 +27,7 @@ Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, PIN_MATRIX,
   NEO_GRB + NEO_KHZ800);
 ESP8266WebServer server(80);
 Clock dclock;
+WindowManager window_manager;
 
 void setup_default_network() {
     Serial.println("Starting wifi hoststop");
@@ -68,11 +71,14 @@ void setup()
     }
     if (try_nb >= 50) {
         setup_default_network();
+        state = State::FAILED_TO_CONNECT;
     } else {
         Serial.println("");
         Serial.println("WiFi connected");
         Serial.println("IP address: ");
         Serial.println(WiFi.localIP());
+        window_manager.init();
+        state = State::CONNECTED;
     }
 
     setup_api(server);
@@ -81,24 +87,10 @@ void setup()
     server.begin();
 }
 
-int x    = matrix.width();
-int pass = 0;
-
 void loop() {
-    if (dclock.getElapsedTime() > 700) {
+    if (dclock.getElapsedTime() > 700 && state == State::CONNECTED) {
         dclock.restart();
-        matrix.fillScreen(0);
-        matrix.setCursor(x, 0);
-        matrix.print(F("11:52abcdefghijklmnopqrstuvwxyz!?"));
-        // if(--x < -100) {
-        //   x = matrix.width();
-        //   if(++pass >= 3) pass = 0;
-        //   matrix.setTextColor(colors[pass]);
-        // }
-        x -= 2;
-        if (x < -100)
-        x = 0;
-        matrix.show();
+        window_manager.update(matrix);
     }
     server.handleClient();
 }

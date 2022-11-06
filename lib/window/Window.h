@@ -1,11 +1,18 @@
 #pragma once
 
+#include <Arduino.h>
+#include <Adafruit_NeoMatrix.h>
+
+namespace window {
+
 class Window {
     public:
-        Window() = delete;
-        virtual ~Window();
+        virtual ~Window() {};
 
-        virtual void update() = 0;
+        virtual void init() = 0;
+        virtual void update(Adafruit_NeoMatrix &matrix) = 0;
     protected:
     private:
 };
+
+}
