@@ -3,6 +3,7 @@
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
+#include <ESP8266mDNS.h>
 #include <Uri.h>
 #include <eeprom.h>
 #include <WindowManager.h>
@@ -71,6 +72,9 @@ void setup()
         Serial.println("WiFi connected");
         Serial.println("IP address: ");
         Serial.println(WiFi.localIP());
+        if (!MDNS.begin("arduisi")) {
+            Serial.println("Failed to start mdns");
+        }
         window_manager.init();
         state = State::CONNECTED;
     }
@@ -79,6 +83,7 @@ void setup()
     setup_preact(server);
     server.enableCORS(true);
     server.begin();
+
 }
 
 void loop() {
