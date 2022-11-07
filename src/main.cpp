@@ -1,9 +1,5 @@
-// Adafruit_NeoMatrix example for tiled NeoPixel matrices.  Scrolls
-// 'Howdy' across three 10x8 NeoPixel grids that were created using
-// NeoPixel 60 LEDs per meter flex strip.
-
 #include <Adafruit_GFX.h>
-#include <Adafruit_NeoMatrix.h>
+#include <Matrix.h>
 #include <Adafruit_NeoPixel.h>
 #include <ESP8266WiFi.h>
 #include <ESP8266WebServer.h>
@@ -20,7 +16,7 @@ static const char *default_ssid = "Arduisi";
 static const char *default_password = "arduisi0";
 
 
-Adafruit_NeoMatrix matrix = Adafruit_NeoMatrix(8, 8, 3, 1, PIN_MATRIX,
+Matrix matrix = Matrix(8, 8, 3, 1, PIN_MATRIX,
   NEO_MATRIX_BOTTOM + NEO_MATRIX_LEFT + NEO_MATRIX_COLUMNS + NEO_MATRIX_PROGRESSIVE +
   NEO_TILE_LEFT,
   NEO_GRB + NEO_KHZ800);

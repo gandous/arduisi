@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Adafruit_NeoMatrix.h>
+#include <Matrix.h>
 #include <Clock.h>
 #include "Window.h"
 #include "Time.h"
@@ -14,14 +14,14 @@ class WindowManager {
         ~WindowManager();
 
         void init();
-        void update(Adafruit_NeoMatrix &matrix);
+        void update(Matrix &matrix);
     protected:
     private:
         enum WindowState {
             TRANSITION,
             FIX,
         };
-        void update_display(Adafruit_NeoMatrix &matrix);
+        void update_display(Matrix &matrix);
 
         window::Window *_windows[WINDOW_NB] = {&_time, &_weather};
         uint8_t _current_win;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Arduino.h>
-#include <Adafruit_NeoMatrix.h>
+#include <Matrix.h>
 
 namespace window {
 
@@ -10,7 +10,7 @@ class Window {
         virtual ~Window() {};
 
         virtual void init() = 0;
-        virtual void update(Adafruit_NeoMatrix &matrix, int x, int y) = 0;
+        virtual void update(Matrix &matrix, int x, int y) = 0;
     protected:
     private:
 };

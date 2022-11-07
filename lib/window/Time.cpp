@@ -13,7 +13,7 @@ void Time::init()
     _time_client.begin();
 }
 
-void Time::update(Adafruit_NeoMatrix &matrix, int x, int y)
+void Time::update(Matrix &matrix, int x, int y)
 {
     _time_client.update();
     matrix.drawRect(11 + x, 1 + y, 2, 2, matrix.Color(0, 0, 255));

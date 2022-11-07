@@ -13,7 +13,7 @@ void WindowManager::init()
     _switch_window_clock.restart();
 }
 
-void WindowManager::update(Adafruit_NeoMatrix &matrix)
+void WindowManager::update(Matrix &matrix)
 {
     matrix.clear();
     if (_switch_window_clock.getElapsedTime() > 10000) {
@@ -32,7 +32,7 @@ void WindowManager::update(Adafruit_NeoMatrix &matrix)
 }
 
 
-void WindowManager::update_display(Adafruit_NeoMatrix &matrix)
+void WindowManager::update_display(Matrix &matrix)
 {
     switch (_state) {
         case WindowState::TRANSITION:

@@ -2,7 +2,7 @@
 
 #include <WiFiUdp.h>
 #include <NTPClient.h>
-#include <Adafruit_NeoMatrix.h>
+#include <Matrix.h>
 #include "Window.h"
 
 namespace window {
@@ -13,7 +13,7 @@ class Time: public Window {
         ~Time();
 
         void init();
-        void update(Adafruit_NeoMatrix &matrix, int x, int y);
+        void update(Matrix &matrix, int x, int y);
     protected:
     private:
         WiFiUDP _ntp_udp;
