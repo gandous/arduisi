@@ -11,7 +11,7 @@ void State::set(States state) {
 }
 
 void State::remove(States state) {
-    _state = (States)(_state ^ state);
+    _state = (States)(_state & ~state);
 }
 
 bool State::has(States state) {
