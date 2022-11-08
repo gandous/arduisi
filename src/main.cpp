@@ -66,7 +66,7 @@ void setup()
     }
     if (try_nb >= 50) {
         setup_default_network();
-        state = State::FAILED_TO_CONNECT;
+        state.set(State::FAILED_TO_CONNECT);
     } else {
         Serial.println("");
         Serial.println("WiFi connected");
@@ -76,7 +76,7 @@ void setup()
             Serial.println("Failed to start mdns");
         }
         window_manager.init();
-        state = State::CONNECTED;
+        state.set(State::CONNECTED);
     }
 
     setup_api(server);
@@ -87,8 +87,14 @@ void setup()
 }
 
 void loop() {
-    if (state == State::CONNECTED) {
-        window_manager.update(matrix);
+    if (state.has(State::CONNECTED)) {
+        if (!state.has(State::SCREEN_OFF)) {
+            window_manager.update(matrix);
+        } else {
+            matrix.clear();
+            matrix.show();
+        }
+        MDNS.update();
     }
     server.handleClient();
 }

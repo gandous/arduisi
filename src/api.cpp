@@ -2,6 +2,7 @@
 #include "api.h"
 #include "callback.h"
 #include "eeprom.h"
+#include "state.h"
 
 void api_scan_wifi(ESP8266WebServer &server)
 {
@@ -63,6 +64,20 @@ void api_connect_wifi(ESP8266WebServer &server)
     }
 }
 
+void api_screen_off(ESP8266WebServer &server)
+{
+    state.set(State::SCREEN_OFF);
+    server.send(200);
+    Serial.printf("Off %d\n", state.has(State::SCREEN_OFF));
+}
+
+void api_screen_on(ESP8266WebServer &server)
+{
+    state.remove(State::SCREEN_OFF);
+    server.send(200);
+    Serial.printf("On %d\n", state.has(State::SCREEN_OFF));
+}
+
 void api_send_cors_header(ESP8266WebServer &server)
 {
     server.sendHeader(F("Access-Control-Max-Age"), F("600"));
@@ -75,4 +90,8 @@ void setup_api(ESP8266WebServer &server) {
     server.on("/api/network", HTTPMethod::HTTP_GET, callback(server, api_scan_wifi));
     server.on("/api/network", HTTPMethod::HTTP_POST, callback(server, api_connect_wifi));
     server.on("/api/network", HTTPMethod::HTTP_OPTIONS, callback(server, api_send_cors_header));
+    server.on("/api/screen-on", HTTPMethod::HTTP_POST, callback(server, api_screen_on));
+    server.on("/api/screen-on", HTTPMethod::HTTP_OPTIONS, callback(server, api_send_cors_header));
+    server.on("/api/screen-off", HTTPMethod::HTTP_POST, callback(server, api_screen_off));
+    server.on("/api/screen-off", HTTPMethod::HTTP_OPTIONS, callback(server, api_send_cors_header));
 }
