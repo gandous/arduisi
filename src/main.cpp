@@ -64,6 +64,11 @@ void setup()
         delay(500);
         Serial.print(".");
     }
+    setup_api(server);
+    setup_preact(server);
+    server.enableCORS(true);
+    server.begin();
+
     if (try_nb >= 50) {
         setup_default_network();
         state.set(State::FAILED_TO_CONNECT);
@@ -75,15 +80,10 @@ void setup()
         if (!MDNS.begin("arduisi")) {
             Serial.println("Failed to start mdns");
         }
+        MDNS.addService("http", "tcp", 80);
         window_manager.init();
         state.set(State::CONNECTED);
     }
-
-    setup_api(server);
-    setup_preact(server);
-    server.enableCORS(true);
-    server.begin();
-
 }
 
 void loop() {
