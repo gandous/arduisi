@@ -22,7 +22,6 @@ void Time::update(Matrix &matrix, int x, int y)
     matrix.printf("%02d", _time_client.getHours());
     matrix.setCursor(14 + x, y);
     matrix.printf("%02d", _time_client.getMinutes());
-    matrix.show();
 }
 
 }

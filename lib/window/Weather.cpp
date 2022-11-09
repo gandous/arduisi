@@ -28,7 +28,6 @@ void Weather::update(Matrix &matrix, int x, int y)
     matrix.printf("%2dc", _feels_like);
     matrix.drawPixel(x + 19, y + 0, matrix.Color(0, 0, 255));
     draw_icon(matrix, x, y);
-    matrix.show();
 }
 
 void Weather::update_data()

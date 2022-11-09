@@ -15,7 +15,6 @@ void WindowManager::init()
 
 void WindowManager::update(Matrix &matrix)
 {
-    matrix.clear();
     if (_switch_window_clock.getElapsedTime() > 10000) {
         _switch_window_clock.restart();
         _prev_win = _current_win;
@@ -27,7 +26,9 @@ void WindowManager::update(Matrix &matrix)
     }
     if (_update_clock.getElapsedTime() > 100) {
         _update_clock.restart();
+        matrix.clear();
         update_display(matrix);
+        matrix.show();
     }
 }
 
