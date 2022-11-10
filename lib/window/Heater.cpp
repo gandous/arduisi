@@ -22,7 +22,8 @@ void Heater::update(Matrix &matrix, int x, int y)
 {
     matrix.drawRGB(x, y, IMG_HOUSE_TEMP, IMG_HOUSE_TEMP_W, IMG_HOUSE_TEMP_H);
     matrix.setCursor(x + 9, y);
-    matrix.printf("%d", _temp);
+    matrix.printf("%02dc", _temp);
+    matrix.drawPixel(x + 19, y + 0, matrix.Color(0, 0, 255));
 }
 
 void Heater::update_data()
@@ -40,7 +41,6 @@ void Heater::update_data()
     }
     read_size = client.readBytesUntil('\n', buffer, BUFFER_LEN - 1);
     buffer[read_size] = '\0';
-    Serial.println(buffer);
     for (uint8_t space_count = 0; buffer[index] != '\0' && space_count < TEMP_OFFSET; index++)
         if (buffer[index] == ' ')
             space_count++;
