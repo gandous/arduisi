@@ -111,13 +111,13 @@ function Setup() {
   }
 
   return (
-    <main id={style.setup} class="container" style={{width: "40%"}}>
+    <main id={style.setup} class="container">
       <hgroup>
         <h1>Arduisi</h1>
         <h6>Setup</h6>
       </hgroup>
-      <p>Network :</p>
-      <article>
+      <p class={style.noMarginBottom}>Network :</p>
+      <article class={style.noMarginTop}>
         {content()}
       </article>
     </main>

@@ -1,5 +1,6 @@
 import { h } from "preact";
 import { Router } from "preact-router";
+import "@picocss/pico";
 
 import Home from "routes/home";
 import Setup from "routes/setup";
