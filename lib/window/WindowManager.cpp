@@ -35,6 +35,10 @@ void WindowManager::update(Matrix &matrix)
     }
 }
 
+WindowManager::WindowState WindowManager::get_state() const
+{
+    return (_state);
+}
 
 void WindowManager::update_display(Matrix &matrix)
 {

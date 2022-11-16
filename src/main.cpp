@@ -91,7 +91,9 @@ void loop() {
             matrix.clear();
             matrix.show();
         }
-        MDNS.update();
+        // Disable mdns update during transition so it doesnt cause framedrop
+        if (window_manager.get_state() != WindowManager::TRANSITION)
+            MDNS.update();
     }
     server.handleClient();
 }

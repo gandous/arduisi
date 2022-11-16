@@ -11,17 +11,19 @@ static const uint8_t WINDOW_NB = 3;
 
 class WindowManager {
     public:
+        enum WindowState {
+            TRANSITION,
+            FIX,
+        };
+
         WindowManager();
         ~WindowManager();
 
         void init();
         void update(Matrix &matrix);
+        WindowState get_state() const;
     protected:
     private:
-        enum WindowState {
-            TRANSITION,
-            FIX,
-        };
         void update_display(Matrix &matrix);
 
         window::Window *_windows[WINDOW_NB] = {&_time, &_weather, &_heater};
