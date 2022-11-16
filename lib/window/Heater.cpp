@@ -41,7 +41,7 @@ void Heater::update_data()
     }
     read_size = client.readBytesUntil('\n', buffer, BUFFER_LEN - 1);
     buffer[read_size] = '\0';
-    for (uint8_t space_count = 0; buffer[index] != '\0' && space_count < TEMP_OFFSET; index++)
+    for (uint8_t space_count = 0; buffer[index] != '\0' && space_count < TEMP_OFFSET - 1; index++)
         if (buffer[index] == ' ')
             space_count++;
     end_index = index;

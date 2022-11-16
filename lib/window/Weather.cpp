@@ -14,7 +14,7 @@ Weather::~Weather()
 
 void Weather::init()
 {
-    // update_data();
+    update_data();
 }
 
 void Weather::update(Matrix &matrix, int x, int y)
@@ -36,7 +36,7 @@ void Weather::update_data()
     HTTPClient http;
     ArduinoJson::StaticJsonDocument<512> doc;
 
-    if (http.begin(client, "http://api.openweathermap.org/data/2.5/weather?appid=" + WEATHER_APIKEY + "&q=paris&units=metric")) {  // HTTP
+    if (http.begin(client, "http://api.openweathermap.org/data/2.5/weather?appid=" + WEATHER_APIKEY + "&q=chaville&units=metric")) {  // HTTP
         Serial.print("[HTTP] GET...\n");
         int httpCode = http.GET();
         if (httpCode > 0) {
@@ -60,23 +60,23 @@ void Weather::update_data()
 
 void Weather::parse_icon(const char *icon)
 {
-    if (strcmp(icon, "01")) {
+    if (strncmp(icon, "01", 2) == 0) {
         _icon = Icon::I01D;
-    } else if (strcmp(icon, "02")) {
+    } else if (strncmp(icon, "02", 2) == 0) {
         _icon = Icon::I02D;
-    } else if (strcmp(icon, "03")) {
+    } else if (strncmp(icon, "03", 2) == 0) {
         _icon = Icon::I03D;
-    } else if (strcmp(icon, "04")) {
+    } else if (strncmp(icon, "04", 2) == 0) {
         _icon = Icon::I04D;
-    } else if (strcmp(icon, "09")) {
+    } else if (strncmp(icon, "09", 2) == 0) {
         _icon = Icon::I09D;
-    } else if (strcmp(icon, "10")) {
+    } else if (strncmp(icon, "10", 2) == 0) {
         _icon = Icon::I10D;
-    } else if (strcmp(icon, "11")) {
+    } else if (strncmp(icon, "11", 2) == 0) {
         _icon = Icon::I11D;
-    } else if (strcmp(icon, "13")) {
+    } else if (strncmp(icon, "13", 2) == 0) {
         _icon = Icon::I13D;
-    } else if (strcmp(icon, "50")) {
+    } else if (strncmp(icon, "50", 2) == 0) {
         _icon = Icon::I50D;
     }
     if (icon[2] == 'n')
@@ -87,12 +87,16 @@ void Weather::draw_icon(Matrix &matrix, int x, int y)
 {
     switch (_icon) {
         case Icon::I01D:
-        case Icon::I01N:
             matrix.drawRGB(x, y, IMG_01D, IMG_01D_W, IMG_01D_H);
             break;
+        case Icon::I01N:
+            matrix.drawRGB(x, y, IMG_01N, IMG_01N_W, IMG_01N_H);
+            break;
         case Icon::I02D:
-        case Icon::I02N:
             matrix.drawRGB(x, y, IMG_02D, IMG_02D_W, IMG_02D_H);
+            break;
+        case Icon::I02N:
+            matrix.drawRGB(x, y, IMG_02N, IMG_02N_W, IMG_02N_H);
             break;
         case Icon::I03D:
         case Icon::I03N:
@@ -107,8 +111,10 @@ void Weather::draw_icon(Matrix &matrix, int x, int y)
             matrix.drawRGB(x, y, IMG_09D, IMG_09D_W, IMG_09D_H);
             break;
         case Icon::I10D:
-        case Icon::I10N:
             matrix.drawRGB(x, y, IMG_10D, IMG_10D_W, IMG_10D_H);
+            break;
+        case Icon::I10N:
+            matrix.drawRGB(x, y, IMG_10N, IMG_10N_W, IMG_10N_H);
             break;
         case Icon::I11D:
         case Icon::I11N:
