@@ -63,12 +63,12 @@ function Setup() {
     return () => {
       interval !== undefined ? clearInterval(interval) : null;
       controller.abort();
-      console.log("aboirt");
+      console.log("abort");
     };
   }, [selected]);
 
   const updateNetworks = () => {
-    axios.get("http://192.168.4.1/api/network", {signal: controller.signal})
+    axios.get("/api/network", {signal: controller.signal})
     .then((resp) => {
       setNetworks(resp.data.networks);
       setState(State.none);
@@ -83,11 +83,12 @@ function Setup() {
   const onConnect = (password) => {
     console.log("password", password);
     setState(State.connecting);
-    axios.post("http://192.168.4.1/api/network", {ssid: networks[selected], password})
+    axios.post("/api/network", {ssid: networks[selected], password})
     .then(() => {
       setState(State.connected);
     }).catch(() => {
       setErr("Failed to connect");
+      setState(State.none);
     })
   }
 
@@ -97,7 +98,7 @@ function Setup() {
     } else if (state === State.connecting) {
       return (<p class={style.loadingText} aria-busy="true">Connecting...</p>);
     } else if (state === State.connected) {
-      return (<p class={style.loadingText}>Arduisi is now connected to your local newtwork. You can access it on <a href="arduisi.local">arduisi.local</a></p>);
+      return (<p class={style.loadingText}>Arduisi is now connected to your local newtwork. You can access it on <a href="http://arduisi.local">arduisi.local</a></p>);
     } else if (selected === -1) {
       return (
         <div>

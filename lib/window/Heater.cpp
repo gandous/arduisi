@@ -44,12 +44,10 @@ void Heater::update_data()
     for (uint8_t space_count = 0; buffer[index] != '\0' && space_count < TEMP_OFFSET; index++)
         if (buffer[index] == ' ')
             space_count++;
-    Serial.printf("index %d\n", index);
     end_index = index;
     while (buffer[end_index] != ' ' && buffer[end_index] != '\0')
         end_index++;
     buffer[end_index] = '\0';
-    Serial.printf("%d %d %s\n", index, end_index, &buffer[index]);
     String temp(&buffer[index]);
     _temp = temp.toInt();
     client.stop();

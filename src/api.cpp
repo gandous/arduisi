@@ -3,6 +3,10 @@
 #include "callback.h"
 #include "eeprom.h"
 #include "state.h"
+#include "arduisi.h"
+
+static const int API_STATUS_BUFFER_SIZE = 256;
+static const int WIFI_CONNECT_TRY = 40;
 
 void api_scan_wifi(ESP8266WebServer &server)
 {
@@ -44,11 +48,13 @@ void api_connect_wifi(ESP8266WebServer &server)
     WiFi.begin(doc["ssid"].as<const char*>(), doc["password"].as<const char*>());
     Serial.print("Connecting to wifi");
     char count = 0;
-    while (WiFi.status() != WL_CONNECTED && count < 90) {
+    while (WiFi.status() != WL_CONNECTED && count < WIFI_CONNECT_TRY) {
         delay(500);
+        count++;
         Serial.print(".");
     }
-    if (count == 90) {
+    if (count == WIFI_CONNECT_TRY) {
+        Serial.println("Failed to connect");
         server.send(400);
     } else {
         Serial.println("\nConnected");
@@ -61,6 +67,10 @@ void api_connect_wifi(ESP8266WebServer &server)
         EEPROM.commit();
         Serial.println("WIFI saved");
         WiFi.softAPdisconnect();
+        state.set(State::CONNECTED);
+        state.remove(State::FAILED_TO_CONNECT);
+        start_mdns();
+        ESP.restart();
     }
 }
 
@@ -78,6 +88,20 @@ void api_screen_on(ESP8266WebServer &server)
     Serial.printf("On %d\n", state.has(State::SCREEN_OFF));
 }
 
+void api_status(ESP8266WebServer &server)
+{
+    ArduinoJson::StaticJsonDocument<200> doc;
+    char buffer[API_STATUS_BUFFER_SIZE];
+    size_t size;
+
+    doc["connected"] = state.has(State::CONNECTED);
+    doc["failedToConnect"] = state.has(State::FAILED_TO_CONNECT);
+    doc["screenOff"] = state.has(State::SCREEN_OFF);
+    size = ArduinoJson::serializeJson(doc, buffer, API_STATUS_BUFFER_SIZE - 1);
+    buffer[size] = '\0';
+    server.send(200, "application/json", (const char*)buffer, size);
+}
+
 void api_send_cors_header(ESP8266WebServer &server)
 {
     server.sendHeader(F("Access-Control-Max-Age"), F("600"));
@@ -91,7 +115,7 @@ void setup_api(ESP8266WebServer &server) {
     server.on("/api/network", HTTPMethod::HTTP_POST, callback(server, api_connect_wifi));
     server.on("/api/network", HTTPMethod::HTTP_OPTIONS, callback(server, api_send_cors_header));
     server.on("/api/screen-on", HTTPMethod::HTTP_POST, callback(server, api_screen_on));
-    server.on("/api/screen-on", HTTPMethod::HTTP_OPTIONS, callback(server, api_send_cors_header));
     server.on("/api/screen-off", HTTPMethod::HTTP_POST, callback(server, api_screen_off));
-    server.on("/api/screen-off", HTTPMethod::HTTP_OPTIONS, callback(server, api_send_cors_header));
+    server.on("/api/status", HTTPMethod::HTTP_GET, callback(server, api_status));
+    server.on("/api/status", HTTPMethod::HTTP_OPTIONS, callback(server, api_send_cors_header));
 }

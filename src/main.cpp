@@ -7,9 +7,8 @@
 #include <Uri.h>
 #include <eeprom.h>
 #include <WindowManager.h>
-#include "api.h"
+#include "arduisi.h"
 #include "font.h"
-#include "website.h"
 #include "state.h"
 
 static const uint8_t PIN_MATRIX = 5;
@@ -23,6 +22,8 @@ Matrix matrix = Matrix(8, 8, 3, 1, PIN_MATRIX,
   NEO_GRB + NEO_KHZ800);
 ESP8266WebServer server(80);
 WindowManager window_manager;
+
+void start_web_server();
 
 void setup_default_network() {
     Serial.println("Starting wifi hoststop");
@@ -55,6 +56,7 @@ void setup()
     int8_t dir = 1;
     uint8_t try_nb = 0;
     while (WiFi.status() != WL_CONNECTED && try_nb < 50) {
+        try_nb++;
         matrix.fillScreen(0);
         matrix.drawFastHLine(x, 5, 5, matrix.Color(255, 113, 52));
         matrix.show();
@@ -64,24 +66,19 @@ void setup()
         delay(500);
         Serial.print(".");
     }
-    setup_api(server);
-    setup_preact(server);
-    server.enableCORS(true);
-    server.begin();
 
     if (try_nb >= 50) {
+        WiFi.disconnect();
         setup_default_network();
         state.set(State::FAILED_TO_CONNECT);
+        start_web_server(server);
     } else {
         Serial.println("");
         Serial.println("WiFi connected");
         Serial.println("IP address: ");
         Serial.println(WiFi.localIP());
-        if (!MDNS.begin("arduisi")) {
-            Serial.println("Failed to start mdns");
-        }
-        MDNS.addService("http", "tcp", 80);
-        window_manager.init();
+        start_web_server(server);
+        start_mdns();
         state.set(State::CONNECTED);
     }
 }
