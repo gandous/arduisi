@@ -14,7 +14,7 @@ Weather::~Weather()
 
 void Weather::init()
 {
-    // update_data();
+    update_data();
 }
 
 void Weather::update(Matrix &matrix, int x, int y)
