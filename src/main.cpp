@@ -14,6 +14,7 @@
 static const uint8_t PIN_MATRIX = 5;
 static const char *default_ssid = "Arduisi";
 static const char *default_password = "arduisi0";
+static const int NETWORK_CONNECT_TRY = 50;
 
 
 Matrix matrix = Matrix(8, 8, 3, 1, PIN_MATRIX,
@@ -22,8 +23,6 @@ Matrix matrix = Matrix(8, 8, 3, 1, PIN_MATRIX,
   NEO_GRB + NEO_KHZ800);
 ESP8266WebServer server(80);
 WindowManager window_manager;
-
-void start_web_server();
 
 void setup_default_network() {
     Serial.println("Starting wifi hoststop");
@@ -55,7 +54,7 @@ void setup()
     uint16_t x = matrix.width() / 2;
     int8_t dir = 1;
     uint8_t try_nb = 0;
-    while (WiFi.status() != WL_CONNECTED && try_nb < 50) {
+    while (WiFi.status() != WL_CONNECTED && try_nb < NETWORK_CONNECT_TRY) {
         try_nb++;
         matrix.fillScreen(0);
         matrix.drawFastHLine(x, 5, 5, matrix.Color(255, 113, 52));
@@ -67,7 +66,7 @@ void setup()
         Serial.print(".");
     }
 
-    if (try_nb >= 50) {
+    if (try_nb >= NETWORK_CONNECT_TRY) {
         WiFi.disconnect();
         setup_default_network();
         state.set(State::FAILED_TO_CONNECT);
@@ -94,6 +93,8 @@ void loop() {
         // Disable mdns update during transition so it doesnt cause framedrop
         if (window_manager.get_state() != WindowManager::TRANSITION)
             MDNS.update();
+    } else if (state.has(State::FAILED_TO_CONNECT)) {
+        show_ip(matrix);
     }
     server.handleClient();
 }
