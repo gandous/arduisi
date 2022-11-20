@@ -19,32 +19,26 @@ class Weather: public Window {
     protected:
     private:
         enum Icon {
-            I01D,
-            I01N,
-            I02D,
-            I02N,
-            I03D,
-            I03N,
-            I04D,
-            I04N,
-            I09D,
-            I09N,
-            I10D,
-            I10N,
-            I11D,
-            I11N,
-            I13D,
-            I13N,
-            I50D,
-            I50N,
+            CLEAR_SKY_D,
+            CLEAR_SKY_N,
+            FOG_D,
+            MAINLY_CLEAR_D,
+            MAINLY_CLEAR_N,
+            OVERCAST_D,
+            PARTLY_CLOUDY_D,
+            RAIN_MEDIUM_D,
+            RAIN_SLIGHT_D,
+            RAIN_SLIGHT_N,
+            SNOW_D,
+            THUNDERSTORM_D,
             NONE,
         };
-        void parse_icon(const char *icon);
+        void parse_icon(int icon);
         void draw_icon(Matrix &matrix, int x, int y);
 
         Clock _update_clock;
         Icon _icon;
-        int _feels_like;
+        int _precipitation_sum;
 };
 
 }

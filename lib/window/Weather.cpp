@@ -6,7 +6,7 @@
 
 namespace window {
 
-Weather::Weather(): _icon(Icon::I11D), _feels_like(99)
+Weather::Weather(): _icon(Icon::CLEAR_SKY_D), _precipitation_sum(99)
 {}
 
 Weather::~Weather()
@@ -14,26 +14,28 @@ Weather::~Weather()
 
 void Weather::init()
 {
-    // update_data();
+    update_data();
 }
 
 void Weather::update_data()
 {
     WiFiClient client;
     HTTPClient http;
-    ArduinoJson::StaticJsonDocument<512> doc;
-
-    if (http.begin(client, "http://api.openweathermap.org/data/2.5/weather?appid=" + WEATHER_APIKEY + "&q=chaville&units=metric")) {  // HTTP
+    ArduinoJson::StaticJsonDocument<1024> doc;
+    if (http.begin(client, "http://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&daily=weathercode,precipitation_sum&timeformat=unixtime&timezone=auto")) {
         Serial.print("[HTTP] GET...\n");
         int httpCode = http.GET();
         if (httpCode > 0) {
             Serial.printf("[HTTP] GET... code: %d\n", httpCode);
 
             if (httpCode == HTTP_CODE_OK) {
-                deserializeJson(doc, http.getString());
+                ArduinoJson::DeserializationError err = deserializeJson(doc, http.getString());
+                if (err != ArduinoJson::DeserializationError::Ok) {
+                    Serial.println(err.c_str());
+                }
 
-                parse_icon(doc["weather"][0]["icon"].as<const char*>());
-                _feels_like = round(doc["main"]["feels_like"].as<float>());
+                parse_icon(doc["daily"]["weathercode"][0].as<int>());
+                _precipitation_sum = round(doc["daily"]["precipitation_sum"][0].as<float>());
             }
         } else {
                 Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
@@ -53,80 +55,101 @@ void Weather::update(Matrix &matrix, int x, int y)
         update_data();
     }
     matrix.setCursor(x + 9, y);
-    matrix.printf("%2dc", _feels_like);
-    matrix.drawPixel(x + 19, y + 0, matrix.Color(0, 0, 255));
+    matrix.printf("%2dm", _precipitation_sum);
     draw_icon(matrix, x, y);
 }
 
-void Weather::parse_icon(const char *icon)
+void Weather::parse_icon(int icon)
 {
-    if (strncmp(icon, "01", 2) == 0) {
-        _icon = Icon::I01D;
-    } else if (strncmp(icon, "02", 2) == 0) {
-        _icon = Icon::I02D;
-    } else if (strncmp(icon, "03", 2) == 0) {
-        _icon = Icon::I03D;
-    } else if (strncmp(icon, "04", 2) == 0) {
-        _icon = Icon::I04D;
-    } else if (strncmp(icon, "09", 2) == 0) {
-        _icon = Icon::I09D;
-    } else if (strncmp(icon, "10", 2) == 0) {
-        _icon = Icon::I10D;
-    } else if (strncmp(icon, "11", 2) == 0) {
-        _icon = Icon::I11D;
-    } else if (strncmp(icon, "13", 2) == 0) {
-        _icon = Icon::I13D;
-    } else if (strncmp(icon, "50", 2) == 0) {
-        _icon = Icon::I50D;
+    switch (icon) {
+        case 0:
+            _icon = Icon::CLEAR_SKY_D;
+            break;
+        case 1:
+            _icon = Icon::MAINLY_CLEAR_D;
+            break;
+        case 2:
+            _icon = Icon::PARTLY_CLOUDY_D;
+            break;
+        case 3:
+            _icon = Icon::OVERCAST_D;
+            break;
+        case 45:
+        case 48:
+            _icon = Icon::FOG_D;
+            break;
+        case 51:
+        case 56:
+        case 61:
+        case 66:
+        case 80:
+            _icon = Icon::RAIN_SLIGHT_D;
+            break;
+        case 53:
+        case 55:
+        case 57:
+        case 63:
+        case 67:
+        case 77:
+        case 81:
+        case 82:
+            _icon = Icon::RAIN_MEDIUM_D;
+            break;
+        case 71:
+        case 73:
+        case 75:
+        case 85:
+        case 86:
+            _icon = Icon::SNOW_D;
+            break;
+        case 95:
+        case 96:
+        case 99:
+            _icon = Icon::THUNDERSTORM_D;
+            break;
+        default:
+            break;
     }
-    if (icon[2] == 'n')
-        _icon = (Icon)(_icon + 1);
 }
 
 void Weather::draw_icon(Matrix &matrix, int x, int y)
 {
     switch (_icon) {
-        case Icon::I01D:
-            matrix.drawRGB(x, y, IMG_01D, IMG_01D_W, IMG_01D_H);
+        case Icon::CLEAR_SKY_D:
+            matrix.drawRGB(x, y, IMG_CLEAR_SKY_D, IMG_CLEAR_SKY_D_W, IMG_CLEAR_SKY_D_H);
             break;
-        case Icon::I01N:
-            matrix.drawRGB(x, y, IMG_01N, IMG_01N_W, IMG_01N_H);
+        case Icon::CLEAR_SKY_N:
+            matrix.drawRGB(x, y, IMG_CLEAR_SKY_N, IMG_CLEAR_SKY_N_W, IMG_CLEAR_SKY_N_H);
             break;
-        case Icon::I02D:
-            matrix.drawRGB(x, y, IMG_02D, IMG_02D_W, IMG_02D_H);
+        case Icon::FOG_D:
+            matrix.drawRGB(x, y, IMG_FOG_D, IMG_FOG_D_W, IMG_FOG_D_H);
             break;
-        case Icon::I02N:
-            matrix.drawRGB(x, y, IMG_02N, IMG_02N_W, IMG_02N_H);
+        case Icon::MAINLY_CLEAR_D:
+            matrix.drawRGB(x, y, IMG_MAINLY_CLEAR_D, IMG_MAINLY_CLEAR_D_W, IMG_MAINLY_CLEAR_D_H);
             break;
-        case Icon::I03D:
-        case Icon::I03N:
-            matrix.drawRGB(x, y, IMG_03D, IMG_03D_W, IMG_03D_H);
+        case Icon::MAINLY_CLEAR_N:
+            matrix.drawRGB(x, y, IMG_MAINLY_CLEAR_N, IMG_MAINLY_CLEAR_N_W, IMG_MAINLY_CLEAR_N_H);
             break;
-        case Icon::I04D:
-        case Icon::I04N:
-            matrix.drawRGB(x, y, IMG_04D, IMG_04D_W, IMG_04D_H);
+        case Icon::OVERCAST_D:
+            matrix.drawRGB(x, y, IMG_OVERCAST_D, IMG_OVERCAST_D_W, IMG_OVERCAST_D_H);
             break;
-        case Icon::I09D:
-        case Icon::I09N:
-            matrix.drawRGB(x, y, IMG_09D, IMG_09D_W, IMG_09D_H);
+       case Icon::PARTLY_CLOUDY_D:
+            matrix.drawRGB(x, y, IMG_PARTLY_CLOUDY_D, IMG_PARTLY_CLOUDY_D_W, IMG_PARTLY_CLOUDY_D_H);
             break;
-        case Icon::I10D:
-            matrix.drawRGB(x, y, IMG_10D, IMG_10D_W, IMG_10D_H);
+       case Icon::RAIN_MEDIUM_D:
+            matrix.drawRGB(x, y, IMG_RAIN_MEDIUM_D, IMG_RAIN_MEDIUM_D_W, IMG_RAIN_MEDIUM_D_H);
             break;
-        case Icon::I10N:
-            matrix.drawRGB(x, y, IMG_10N, IMG_10N_W, IMG_10N_H);
+       case Icon::RAIN_SLIGHT_D:
+            matrix.drawRGB(x, y, IMG_RAIN_SLIGHT_D, IMG_RAIN_SLIGHT_D_W, IMG_RAIN_SLIGHT_D_H);
             break;
-        case Icon::I11D:
-        case Icon::I11N:
-            matrix.drawRGB(x, y, IMG_11D, IMG_11D_W, IMG_11D_H);
+        case Icon::RAIN_SLIGHT_N:
+            matrix.drawRGB(x, y, IMG_RAIN_SLIGHT_N, IMG_RAIN_SLIGHT_N_W, IMG_RAIN_SLIGHT_N_H);
             break;
-        case Icon::I13D:
-        case Icon::I13N:
-            matrix.drawRGB(x, y, IMG_13D, IMG_13D_W, IMG_13D_H);
+       case Icon::SNOW_D:
+            matrix.drawRGB(x, y, IMG_SNOW_D, IMG_SNOW_D_W, IMG_SNOW_D_H);
             break;
-        case Icon::I50D:
-        case Icon::I50N:
-            matrix.drawRGB(x, y, IMG_50D, IMG_50D_W, IMG_50D_H);
+       case Icon::THUNDERSTORM_D:
+            matrix.drawRGB(x, y, IMG_THUNDERSTORM_D, IMG_THUNDERSTORM_D_W, IMG_THUNDERSTORM_D_H);
             break;
         default:
             break;

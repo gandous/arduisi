@@ -3,10 +3,9 @@ from PIL import Image
 # https://www.sigmdel.ca/michel/program/misc/gfxfont_8bit_en.html
 
 CHAR_W = 4
-CHAR_H = 7
-FONT_FILE = "font/font4x7v2.png"
+CHAR_H = 8
+FONT_FILE = "img/font4x8.png"
 CHAR_PER_ROW = 26
-NB_OF_ROW = 3
 
 def is_black(pixel):
     return pixel[3] == 255
@@ -87,8 +86,8 @@ def generate_glyph_string(glyphs):
     return string
 
 
-def convert_font():
-    with open("font.ino", "w+") as ofile:
+def convert_font(font_img, output_file):
+    with open(output_file, "w+") as ofile:
         ofile.write("#pragma once\n")
         ofile.write("#include <Arduino.h>\n")
         ofile.write("#include <Adafruit_GFX.h>\n")
@@ -96,7 +95,7 @@ def convert_font():
         font_data = []
         glyphs = []
         bitmap_offset = 0
-        with Image.open(FONT_FILE) as img:
+        with Image.open(font_img) as img:
             for c in range(ord(" "), ord("~") + 1):
                 i = c - ord(" ")
                 x = i % CHAR_PER_ROW
@@ -116,4 +115,4 @@ def convert_font():
 
 
 if __name__ == "__main__":
-    convert_font()
+    convert_font(FONT_FILE, "include/font.h")
