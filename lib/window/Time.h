@@ -13,6 +13,7 @@ class Time: public Window {
         ~Time();
 
         void init();
+        void update_data();
         void update(Matrix &matrix, int x, int y);
     protected:
     private:

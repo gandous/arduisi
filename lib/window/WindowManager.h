@@ -21,13 +21,13 @@ class WindowManager {
 
         void init();
         void update(Matrix &matrix);
+        void update_data(Matrix &matrix);
         WindowState get_state() const;
     protected:
     private:
         void update_display(Matrix &matrix);
 
         window::Window *_windows[WINDOW_NB] = {&_time, &_weather, &_heater};
-        bool _init;
         uint8_t _current_win;
         uint8_t _prev_win;
         Clock _switch_window_clock;

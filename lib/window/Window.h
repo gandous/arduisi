@@ -10,6 +10,7 @@ class Window {
         virtual ~Window() {};
 
         virtual void init() = 0;
+        virtual void update_data() = 0;
         virtual void update(Matrix &matrix, int x, int y) = 0;
     protected:
     private:

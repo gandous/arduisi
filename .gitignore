@@ -5,3 +5,4 @@
 .vscode/ipch
 env
 lib/window/WeatherKey.h
+config.h

@@ -1,0 +1,7 @@
+#pragma once
+
+#include <Arduino.h>
+
+static const uint8_t PIN_MATRIX = 5;
+static const char *SSID = "Arduisi";
+static const char *PASSWORD = "arduisi0";

@@ -14,6 +14,7 @@ class Weather: public Window {
         ~Weather();
 
         void init();
+        void update_data();
         void update(Matrix &matrix, int x, int y);
     protected:
     private:
@@ -38,7 +39,6 @@ class Weather: public Window {
             I50N,
             NONE,
         };
-        void update_data();
         void parse_icon(const char *icon);
         void draw_icon(Matrix &matrix, int x, int y);
 

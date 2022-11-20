@@ -1,6 +1,7 @@
+#include <ESP8266WiFi.h>
 #include "WindowManager.h"
 
-WindowManager::WindowManager(): _init(false), _current_win(0), _prev_win(0), _x(0), _y(0), _state(WindowState::FIX)
+WindowManager::WindowManager(): _current_win(0), _prev_win(0), _x(0), _y(0), _state(WindowState::FIX)
 {}
 
 WindowManager::~WindowManager()
@@ -8,7 +9,6 @@ WindowManager::~WindowManager()
 
 void WindowManager::init()
 {
-    _init = true;
     for (uint8_t i = 0; i < WINDOW_NB; i++)
         _windows[i]->init();
     _switch_window_clock.restart();
@@ -16,8 +16,6 @@ void WindowManager::init()
 
 void WindowManager::update(Matrix &matrix)
 {
-    if (!_init)
-        init();
     if (_switch_window_clock.getElapsedTime() > 10000) {
         _switch_window_clock.restart();
         _prev_win = _current_win;
@@ -33,6 +31,12 @@ void WindowManager::update(Matrix &matrix)
         update_display(matrix);
         matrix.show();
     }
+}
+
+void WindowManager::update_data(Matrix &matrix)
+{
+    // for (uint8_t i = 0; i < WINDOW_NB; i++)
+    //     _windows[i]->update_data();
 }
 
 WindowManager::WindowState WindowManager::get_state() const

@@ -13,10 +13,10 @@ class Heater: public Window {
         ~Heater();
 
         void init();
+        void update_data();
         void update(Matrix &matrix, int x, int y);
     protected:
     private:
-        void update_data();
         int _temp;
 };
 

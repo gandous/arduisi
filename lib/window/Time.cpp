@@ -11,11 +11,16 @@ Time::~Time()
 void Time::init()
 {
     _time_client.begin();
+    _time_client.forceUpdate();
+}
+
+void Time::update_data()
+{
+    _time_client.forceUpdate();
 }
 
 void Time::update(Matrix &matrix, int x, int y)
 {
-    _time_client.update();
     matrix.drawRect(11 + x, 1 + y, 2, 2, matrix.Color(0, 0, 255));
     matrix.drawRect(11 + x, 4 + y, 2, 2, matrix.Color(0, 0, 255));
     matrix.setCursor(1 + x, y);

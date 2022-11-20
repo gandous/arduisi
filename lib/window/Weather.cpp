@@ -14,20 +14,7 @@ Weather::~Weather()
 
 void Weather::init()
 {
-    update_data();
-}
-
-void Weather::update(Matrix &matrix, int x, int y)
-{
-    if (_update_clock.getElapsedTimeAsSecond() > METEO_UPDATE_INTERVAL) {
-        Serial.println(_update_clock.getElapsedTimeAsSecond());
-        _update_clock.restart();
-        update_data();
-    }
-    matrix.setCursor(x + 9, y);
-    matrix.printf("%2dc", _feels_like);
-    matrix.drawPixel(x + 19, y + 0, matrix.Color(0, 0, 255));
-    draw_icon(matrix, x, y);
+    // update_data();
 }
 
 void Weather::update_data()
@@ -54,8 +41,21 @@ void Weather::update_data()
 
       http.end();
     } else {
-      Serial.printf("[HTTP} Unable to connect\n");
+      Serial.printf("[HTTP] Unable to connect\n");
     }
+}
+
+void Weather::update(Matrix &matrix, int x, int y)
+{
+    if (_update_clock.getElapsedTimeAsSecond() > METEO_UPDATE_INTERVAL) {
+        Serial.println(_update_clock.getElapsedTimeAsSecond());
+        _update_clock.restart();
+        update_data();
+    }
+    matrix.setCursor(x + 9, y);
+    matrix.printf("%2dc", _feels_like);
+    matrix.drawPixel(x + 19, y + 0, matrix.Color(0, 0, 255));
+    draw_icon(matrix, x, y);
 }
 
 void Weather::parse_icon(const char *icon)
