@@ -7,7 +7,6 @@
 #include <Uri.h>
 #include <eeprom.h>
 #include <WindowManager.h>
-#include "arduisi.h"
 #include "font.h"
 #include "state.h"
 
@@ -23,13 +22,6 @@ Matrix matrix = Matrix(8, 8, 3, 1, PIN_MATRIX,
   NEO_GRB + NEO_KHZ800);
 ESP8266WebServer server(80);
 WindowManager window_manager;
-
-void setup_default_network() {
-    Serial.println("Starting wifi hoststop");
-    WiFi.softAP(default_ssid, default_password);
-    Serial.print("IP: ");
-    Serial.println(WiFi.softAPIP());
-}
 
 void setup()
 {
@@ -68,16 +60,12 @@ void setup()
 
     if (try_nb >= NETWORK_CONNECT_TRY) {
         WiFi.disconnect();
-        setup_default_network();
         state.set(State::FAILED_TO_CONNECT);
-        start_web_server(server);
     } else {
         Serial.println("");
         Serial.println("WiFi connected");
         Serial.println("IP address: ");
         Serial.println(WiFi.localIP());
-        start_web_server(server);
-        start_mdns();
         state.set(State::CONNECTED);
     }
 }
@@ -90,11 +78,6 @@ void loop() {
             matrix.clear();
             matrix.show();
         }
-        // Disable mdns update during transition so it doesnt cause framedrop
-        if (window_manager.get_state() != WindowManager::TRANSITION)
-            MDNS.update();
-    } else if (state.has(State::FAILED_TO_CONNECT)) {
-        show_ip(matrix);
     }
     server.handleClient();
 }
