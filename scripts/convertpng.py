@@ -58,4 +58,4 @@ if __name__ == "__main__":
     for f in pathlib.Path("img/weather").iterdir():
         weathers.append(f)
     convert_pngs(weathers, "lib/window/WeatherIcon.h")
-    convert_pngs(["img/house_temp.png"], "lib/window/HeaterIcon.h")
+    convert_pngs(["img/house_temp_inside.png", "img/house_temp_outside.png"], "lib/window/HeaterIcon.h")

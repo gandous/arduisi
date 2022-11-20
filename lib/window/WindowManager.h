@@ -5,9 +5,10 @@
 #include "Window.h"
 #include "Time.h"
 #include "Weather.h"
-#include "Heater.h"
+#include "HeaterOutsideTemp.h"
+#include "HeaterInsideTemp.h"
 
-static const uint8_t WINDOW_NB = 3;
+static const uint8_t WINDOW_NB = 4;
 
 class WindowManager {
     public:
@@ -27,7 +28,7 @@ class WindowManager {
     private:
         void update_display(Matrix &matrix);
 
-        window::Window *_windows[WINDOW_NB] = {&_time, &_weather, &_heater};
+        window::Window *_windows[WINDOW_NB] = {&_time, &_weather, &_heater_inside_temp, &_heater_outside_temp};
         uint8_t _current_win;
         uint8_t _prev_win;
         Clock _switch_window_clock;
@@ -37,5 +38,6 @@ class WindowManager {
         WindowState _state;
         window::Time _time;
         window::Weather _weather;
-        window::Heater _heater;
+        window::HeaterInsideTemp _heater_inside_temp;
+        window::HeaterOutsideTemp _heater_outside_temp;
 };

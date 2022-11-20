@@ -14,10 +14,11 @@ class Heater: public Window {
 
         void init();
         void update_data();
-        void update(Matrix &matrix, int x, int y);
     protected:
+        void draw_temperature(Matrix &matrix, int x, int y, const uint16_t img[], int temp);
+        int extract_int(char *buffer, size_t value_idx);
+        virtual void parse_data(char *data) = 0;
     private:
-        int _temp;
 };
 
 }
