@@ -35,8 +35,8 @@ void WindowManager::update(Matrix &matrix)
 
 void WindowManager::update_data(Matrix &matrix)
 {
-    // for (uint8_t i = 0; i < WINDOW_NB; i++)
-    //     _windows[i]->update_data();
+    for (uint8_t i = 0; i < WINDOW_NB; i++)
+        _windows[i]->update_data();
 }
 
 WindowManager::WindowState WindowManager::get_state() const

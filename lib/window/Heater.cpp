@@ -38,7 +38,7 @@ void Heater::draw_temperature(Matrix &matrix, int x, int y, const uint16_t img[]
 {
     matrix.drawRGB(x, y, img, IMG_HOUSE_TEMP_INSIDE_W, IMG_HOUSE_TEMP_INSIDE_H);
     matrix.setCursor(x + 9, y);
-    matrix.printf("%02dc", temp);
+    matrix.printf("%2dc", temp);
     matrix.drawPixel(x + 19, y + 0, matrix.Color(0, 0, 255));
 }
 

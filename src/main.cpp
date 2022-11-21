@@ -23,19 +23,18 @@ Clock update_data_clock;
 
 void update_data(Matrix &matrix)
 {
-    // WiFi.mode(WIFI_STA);
-    // WiFi.begin(SSID, PASSWORD);
+    WiFi.mode(WIFI_STA);
+    WiFi.begin(SSID, PASSWORD);
 
-    // matrix.drawPixel(0, matrix.height() - 1, matrix.Color(255, 113, 52));
-    // matrix.show();
-    // while (WiFi.status() != WL_CONNECTED) {
-    //     delay(200);
-    // }
-    // matrix.drawPixel(0, matrix.height() - 1, matrix.Color(0, 255, 20));
-    // matrix.show();
-    // window_manager.update_data(matrix);
-    // delay(3000);
-    // WiFi.disconnect(true);
+    matrix.drawPixel(0, matrix.height() - 1, matrix.Color(255, 113, 52));
+    matrix.show();
+    while (WiFi.status() != WL_CONNECTED) {
+        delay(200);
+    }
+    matrix.drawPixel(0, matrix.height() - 1, matrix.Color(0, 255, 20));
+    matrix.show();
+    window_manager.update_data(matrix);
+    WiFi.disconnect(true);
 }
 
 void setup()
@@ -79,7 +78,7 @@ void setup()
 
 void loop() {
     window_manager.update(matrix);
-    if (update_data_clock.getElapsedTimeAsSecond() > DATA_UPDATE_INTERVAL) {
+    if (update_data_clock.getElapsedTimeAsSecond() > DATA_UPDATE_INTERVAL && window_manager.get_state() == WindowManager::WindowState::FIX) {
         update_data(matrix);
         update_data_clock.restart();
     }
