@@ -1,7 +1,7 @@
 #include <ESP8266HTTPClient.h>
 #include <ArduinoJson.hpp>
 #include "Weather.h"
-#include "WeatherKey.h"
+#include "WeatherConfig.h"
 #include "WeatherIcon.h"
 
 namespace window {
@@ -22,7 +22,7 @@ void Weather::update_data()
     WiFiClient client;
     HTTPClient http;
     ArduinoJson::StaticJsonDocument<1024> doc;
-    if (http.begin(client, "http://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&daily=weathercode,precipitation_sum&timeformat=unixtime&timezone=auto")) {
+    if (http.begin(client, WEATHER_API_URL)) {
         Serial.print("[HTTP] GET...\n");
         int httpCode = http.GET();
         if (httpCode > 0) {

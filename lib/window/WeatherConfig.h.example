@@ -1,0 +1,5 @@
+#pragma once
+
+#include "Arduino.h"
+
+static const char *WEATHER_API_URL PROGMEM = "http://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&daily=weathercode,precipitation_sum&timeformat=unixtime&timezone=auto";
