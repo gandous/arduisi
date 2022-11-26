@@ -56,6 +56,8 @@ void WindowManager::update_display(Matrix &matrix)
             break;
         case WindowState::FIX:
             _windows[_current_win]->update(matrix, 0, 0);
+            if (_windows[_current_win]->get_update_status() == window::Window::UpdateStatus::FAILED)
+                matrix.drawPixel(0, matrix.height() - 1, matrix.Color(255, 0, 0));
             break;
     }
 }

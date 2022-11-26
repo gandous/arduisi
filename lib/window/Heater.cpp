@@ -26,12 +26,14 @@ void Heater::update_data()
     client.connect(IPAddress(192, 168, 1, 198), 23);
     if  (!client.connected()) {
         Serial.println("Failed to connect to heater");
+        _status = UpdateStatus::FAILED;
         return;
     }
     read_size = client.readBytesUntil('\n', buffer, BUFFER_LEN - 1);
     buffer[read_size] = '\0';
     parse_data(buffer);
     client.stop();
+    _status = UpdateStatus::SUCCESS;
 }
 
 void Heater::draw_temperature(Matrix &matrix, int x, int y, const uint16_t img[], int temp)

@@ -32,17 +32,22 @@ void Weather::update_data()
                 ArduinoJson::DeserializationError err = deserializeJson(doc, http.getString());
                 if (err != ArduinoJson::DeserializationError::Ok) {
                     Serial.println(err.c_str());
+                    _status = UpdateStatus::FAILED;
+                    return;
                 }
 
                 parse_icon(doc["daily"]["weathercode"][0].as<int>());
                 _precipitation_sum = round(doc["daily"]["precipitation_sum"][0].as<float>());
+                _status = UpdateStatus::SUCCESS;
             }
         } else {
                 Serial.printf("[HTTP] GET... failed, error: %s\n", http.errorToString(httpCode).c_str());
+                _status = UpdateStatus::FAILED;
         }
 
       http.end();
     } else {
+      _status = UpdateStatus::FAILED;
       Serial.printf("[HTTP] Unable to connect\n");
     }
 }

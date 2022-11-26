@@ -11,12 +11,12 @@ Time::~Time()
 void Time::init()
 {
     _time_client.begin();
-    _time_client.forceUpdate();
+    _status = _time_client.forceUpdate() ? UpdateStatus::SUCCESS : UpdateStatus::FAILED;
 }
 
 void Time::update_data()
 {
-    _time_client.forceUpdate();
+    _status = _time_client.forceUpdate() ? UpdateStatus::SUCCESS : UpdateStatus::FAILED;
 }
 
 void Time::update(Matrix &matrix, int x, int y)
