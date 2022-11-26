@@ -23,14 +23,26 @@ Clock update_data_clock;
 
 void update_data(Matrix &matrix)
 {
+    uint8_t try_count = 0;
+
     WiFi.mode(WIFI_STA);
     WiFi.begin(SSID, PASSWORD);
-
     matrix.drawPixel(0, matrix.height() - 1, matrix.Color(255, 113, 52));
     matrix.show();
-    while (WiFi.status() != WL_CONNECTED) {
-        delay(200);
-    }
+    do {
+        while (WiFi.status() != WL_CONNECTED && try_count < 100) {
+            delay(200);
+            try_count++;
+        }
+        if (WiFi.status() != WL_CONNECTED) {
+            matrix.drawPixel(0, matrix.height() - 1, matrix.Color(255, 0, 0));
+            matrix.show();
+            Serial.printf("Failed %d\n", WiFi.status());
+            try_count = 0;
+            WiFi.disconnect();
+            WiFi.begin(SSID, PASSWORD);
+        }
+    } while (WiFi.status() != WL_CONNECTED);
     matrix.drawPixel(0, matrix.height() - 1, matrix.Color(0, 255, 20));
     matrix.show();
     window_manager.update_data(matrix);
