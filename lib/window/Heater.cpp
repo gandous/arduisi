@@ -58,7 +58,7 @@ int Heater::extract_int(char *buffer, size_t value_idx)
     buffer[end_index] = '\0';
     String tmp(&buffer[index]);
     buffer[end_index] = ' ';
-    return (tmp.toInt());
+    return (round(tmp.toFloat()));
 }
 
 }
