@@ -48,16 +48,20 @@ int Heater::extract_int(char *buffer, size_t value_idx)
 {
     size_t index = 0;
     size_t end_index = 0;
+    bool end_char;
 
     for (uint8_t space_count = 0; buffer[index] != '\0' && space_count < value_idx - 1; index++)
         if (buffer[index] == ' ')
             space_count++;
+    if (buffer[index] == '\0')
+        return (HEATER_FETCH_ERROR);
     end_index = index;
     while (buffer[end_index] != ' ' && buffer[end_index] != '\0')
         end_index++;
+    end_char = buffer[end_index] == '\0';
     buffer[end_index] = '\0';
     String tmp(&buffer[index]);
-    buffer[end_index] = ' ';
+    buffer[end_index] = end_char ? '\0' : ' ';
     return (round(tmp.toFloat()));
 }
 

@@ -7,6 +7,8 @@
 
 namespace window {
 
+static const int HEATER_FETCH_ERROR = 99;
+
 class Heater: public Window {
     public:
         Heater();

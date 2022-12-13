@@ -16,7 +16,10 @@ void HeaterInsideTemp::update(Matrix &matrix, int x, int y)
 
 void HeaterInsideTemp::parse_data(char *data)
 {
-    _temp = extract_int(data, 60);
+    int new_temp = extract_int(data, 60);
+
+    if (new_temp != HEATER_FETCH_ERROR)
+        _temp = new_temp;
 }
 
 }
