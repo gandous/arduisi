@@ -5,3 +5,4 @@
 static const uint8_t PIN_MATRIX = 5;
 static const char *SSID = "Arduisi";
 static const char *PASSWORD = "arduisi0";
+static const uint16_t DATA_UPDATE_INTERVAL = 3600;
