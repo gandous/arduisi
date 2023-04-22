@@ -1,7 +1,6 @@
 #pragma once
 
 #include <WiFiUdp.h>
-#include <NTPClient.h>
 #include <Matrix.h>
 #include "Window.h"
 

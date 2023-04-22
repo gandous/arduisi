@@ -1,8 +1,8 @@
 #pragma once
 
-#include <WiFiUdp.h>
-#include <NTPClient.h>
 #include <Matrix.h>
+#include <Arduino.h>
+#include <ezTime.h>
 #include "Window.h"
 
 namespace window {
@@ -17,8 +17,7 @@ class Time: public Window {
         void update(Matrix &matrix, int x, int y);
     protected:
     private:
-        WiFiUDP _ntp_udp;
-        NTPClient _time_client;
+        Timezone _tz;
 };
 
 }
